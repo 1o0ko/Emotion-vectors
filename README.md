@@ -1,8 +1,8 @@
 # emotion_vecotrs
 Application of BabelNet and BabelFly API to movie subtitles annotation
 
- build_sense_trees.py  - is a python script to build sense trees :-)
- display_sense_tree.py - is a python script to display those sense trees :-)
+* build_sense_trees.py  - is a python script to build sense trees :-)
+* display_sense_tree.py - is a python script to display those sense trees :-)
  
 # set up
 
