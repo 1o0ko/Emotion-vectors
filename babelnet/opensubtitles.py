@@ -2,7 +2,19 @@ import urllib2
 import sys
 import logging
 import logging.config
+import tarfile
+import requests 
+
 from bs4 import BeautifulSoup
+from cStringIO import StringIO
+
+def getGzXml(fromDoc):
+    url = "http://opus.lingfil.uu.se/download.php?f=OpenSubtitles2016/xml/{0}".format(fromDoc)
+    response = requests.get(url)
+    results = gzip.GzipFile(fileobj=StringIO(response.content))
+    
+    for r in results:
+        yield r
 
 def getMovieName(docId):
 
@@ -24,10 +36,8 @@ def getMovieName(docId):
         return text[:text.rfind('subtitles')-1]
     
     except urllib2.HTTPError, e:
-        content = e.pf.read()
-        soup = BeautifulSoup(content, 'html.parser')         
-        logger.error("Unexpected error: %s", sys.exc_info()[0])
-        return 'no name found: {0} for id {1}'.format(soup.title.string, docId)
+        logger.error("Unexpected HTTP error: %s", sys.exc_info()[0])
+        return 'no name found for id {1}'.format(docId)
     except:
         logger.error("Unexpected error: %s", sys.exc_info()[0])
         return 'no name found for id: {0}'.format(docId)
