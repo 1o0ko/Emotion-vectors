@@ -54,6 +54,6 @@ def getAllMovieNames(path, filename):
 if __name__ == '__main__':
     
     logging.config.fileConfig('logging.ini', disable_existing_loggers=False)
-    with open(movies.txt, 'w') as f:
+    with open('movies.txt', 'w') as f:
         for movie_id, movie_name, from_doc, to_doc  in getAllMovieNames('/home/data/', 'en-pl.xml'):
-            f.write(";".join([movie_id, movie_name, from_doc, to_doc,"\n"])
+            f.write(";".join([movie_id, movie_name, from_doc, to_doc,"\n"]))
