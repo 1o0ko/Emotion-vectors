@@ -1,1 +1,3 @@
-/threshold*
+*.pyc
+threshold_*
+*.log
