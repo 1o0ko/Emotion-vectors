@@ -37,7 +37,7 @@ def getMovieName(docId):
     
     except urllib2.HTTPError, e:
         logger.error("Unexpected HTTP error: %s", sys.exc_info()[0])
-        return 'no name found for id {1}'.format(docId)
+        return 'no name found for id {0}'.format(docId)
     except:
         logger.error("Unexpected error: %s", sys.exc_info()[0])
         return 'no name found for id: {0}'.format(docId)
