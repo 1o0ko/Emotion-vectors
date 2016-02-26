@@ -19,11 +19,12 @@ def getMovieName(docId):
         return text[:text.rfind('subtitles')-1]
     
     except urllib2.HTTPError, e:
-        print e.fp.read()
-        return 'no name found'
+        content = e.pf.read()
+        soup = BeautifulSoup(content, 'html.parser')         
+        return 'no name found: {0}'.format(soup.title.string)
     except:
         print "Unexpected error:", sys.exc_info()[0]
-        return 'no name found for id ', docId
+        return 'no name found for id: {0}'.format(docId)
 
 def parseGroup(text):
     line = BeautifulSoup(text, "lxml")
@@ -45,6 +46,5 @@ def getAllMovieNames(path, filename ):
 
 
 if __name__ == '__main__':
-#    print getMovieName(2099)
     for name in getAllMovieNames('/home/data/', 'en-pl.xml'):
         print name
