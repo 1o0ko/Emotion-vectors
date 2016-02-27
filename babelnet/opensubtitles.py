@@ -12,6 +12,47 @@ from cStringIO import StringIO
 DATA_PATH = '/home/data/'
 DATA_NAME = 'en-pl.xml'
 
+#-------------------------------| PARSING
+
+"""Returns documents ids
+
+Helper method to retrieve subtitles ids from line
+"""
+def parseGroup(text):
+    line = BeautifulSoup(text, "lxml")
+    fst = line.html.body.linkgrp['fromdoc']
+    snd = line.linkgrp['todoc']
+
+    return fst, snd 
+
+"""Returns string with xml contents
+
+Helper method to donwload document from the internet and unpack it 
+"""    
+def getGzXml(doc):
+    url = "http://opus.lingfil.uu.se/download.php?f=OpenSubtitles2016/xml/{0}".format(doc)
+    response = requests.get(url)
+    results = gzip.GzipFile(fileobj=StringIO(response.content))
+    
+    return ''.join([r for r in results])
+
+
+"""Returns list with subtitle lines
+
+"""
+def getDialogueLines(xml):
+  
+    soup = BeautifulSoup(xml, "lxml")      
+    get_text = lambda line: ' '.join([word.get_text() for word in line.findAll('w')])
+            
+    return [get_text(line) for line in soup.findAll('s')]
+
+#-------------------------------| Indices
+def getIndices(line):
+    return (None if line == '' else [(int(x)-1) for x in line.split(' ')])
+        
+
+
 def getMovieName(docId):
 
     logger = logging.getLogger(__name__)
@@ -38,13 +79,6 @@ def getMovieName(docId):
         logger.error("Unexpected error: %s", sys.exc_info()[0])
         return 'no name found for id: {0}'.format(docId)
 
-def parseGroup(text):
-    line = BeautifulSoup(text, "lxml")
-    fst = line.html.body.linkgrp['fromdoc']
-    snd = line.linkgrp['todoc']
-
-    return fst, snd 
-
 def getAllMovieNames(path, filename):
 
     with open('{0}/{1}'.format(path, filename)) as f:
@@ -64,47 +98,49 @@ def downloadAllMovies(filename):
             movie_id, movie_name, from_doc, to_doc = result
             f.write(u';'.join([movie_id, movie_name, from_doc, to_doc]).encode('utf-8').strip() + "\n")
 
-def getGzXml(doc):
-    url = "http://opus.lingfil.uu.se/download.php?f=OpenSubtitles2016/xml/{0}".format(doc)
-    response = requests.get(url)
-    results = gzip.GzipFile(fileobj=StringIO(response.content))
-    
-    for r in results:
-        yield r
 
-def getIndices(line):
-    if line == '':
-        return None
-    else:
-        return [int(x) for x in line.split(' ')]
 
 def getParalelSubtittles(en_doc_id):
-    logger = logging.getLogger(__name__)
-    indices = []
     
+    logger = logging.getLogger(__name__)
+    
+    subtitles = []
+    en_subs, pl_subs = None, None
     with open('{0}/{1}'.format(DATA_PATH, DATA_NAME)) as f:
         has_found = False
+        
         for line in f:
+        
             if line.startswith('<linkGrp'):
                 from_doc, to_doc = parseGroup(line)
+                
                 if en_doc_id == from_doc:
                     has_found = True
-                    print 'Found it'
+                    
+                    en_subs = getDialogueLines(getGzXml(from_doc))
+                    pl_subs = getDialogueLines(getGzXml(to_doc))
+                    
                     continue
                     
-            if line.startswith('</linkGrp>') and has_found:
-                print 'The end!'              
+            if line.startswith('</linkGrp>') and has_found:  
                 break
                 
             if has_found:
                 elem = BeautifulSoup(line, "lxml")
                 xtargets = elem.html.head.link['xtargets'].split(";")
-                en = getIndices(xtargets[0])
-                pl = getIndices(xtargets[1])
+                en_idxs = getIndices(xtargets[0])
+                pl_idxs = getIndices(xtargets[1])
                 
-                indices.append((en, pl))
+                if en_idxs and pl_idxs:
+                    try: 
+                        en_text = "".join([en_subs[idx] for idx in en_idxs]).encode('utf-8').strip()
+                        pl_text = "".join([pl_subs[idx] for idx in pl_idxs]).encode('utf-8').strip()
+                    
+                        subtitles.append((en_text, pl_text))
+                    except:
+                        logger.error("Unexpected error: %s", sys.exc_info())                        
     
-    return indices
+    return subtitles
     
 
 if __name__ == '__main__':
@@ -113,11 +149,11 @@ if __name__ == '__main__':
 
 #    downloadAllMovies('movies.txt')
 
-    doc = "en/0/1218843/5205554.xml.gz"
-        
-    for idx in getParalelSubtittles(doc):
-      print idx
+    doc = "en/1957/50083/3127877.xml.gz"
+    
+    for from_, to_ in getParalelSubtittles(doc):
+      print from_
+      print to_
+      print "-------"  
       
-    for s in getGzXml(doc):
-      print s
 
