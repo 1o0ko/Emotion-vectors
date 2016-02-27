@@ -1,9 +1,10 @@
-import urllib2
 import sys
+import requests 
+import urllib2
 import logging
 import logging.config
 import gzip
-import requests 
+
 
 from bs4 import BeautifulSoup
 from cStringIO import StringIO

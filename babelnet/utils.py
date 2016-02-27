@@ -2,21 +2,26 @@ import urllib2
 import urllib
 import json
 import gzip
+import logging
 
 from StringIO import StringIO
 
 def sendRequest(params, service_url):
+    logger = logging.getLogger(__name__)
+        
     url = service_url + '?' + urllib.urlencode(params)
     request = urllib2.Request(url)
     request.add_header('Accept-encoding', 'gzip')
     response = urllib2.urlopen(request)
 
     if response.info().get('Content-Encoding') == 'gzip':
+        logger.debug('Recieved response for: {0}'.format(params))
         buf = StringIO( response.read())
         f = gzip.GzipFile(fileobj=buf)
         data = json.loads(f.read())
         return data
-    
+    else:
+        logger.debug('Could not recieve response for: {0}'.format(params))
     return []
 
 def getSynsetIds(text, lang, key):

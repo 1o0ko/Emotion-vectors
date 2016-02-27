@@ -2,6 +2,9 @@ from babelnet.structures import Sense, Tree
 from babelnet.utils import *
 import cPickle as pickle
 
+import logging
+import logging.config
+
 
 # to later save the sense tree
 def save(tree, fileName):
@@ -34,23 +37,26 @@ def buildSenseTree(root, key, maxLevel, weightThreshold):
     
     return root
 
-# Parameters
+if __name__ == '__main__':
 
-lang = 'EN'
-key = 'key'
-emotions = ['love', 'happiness', 'surprise', 'emotionless', 'sad', 'disgust', 'anger', 'fear']
-treeDepth = 3
+    logging.config.fileConfig('logging.ini', disable_existing_loggers=False)
+    logger = logging.getLogger(__name__)
 
-for emotion in emotions:
-    print 'Getting synsetIds for ' + emotion
-    id = getSynsetIds(emotion, lang, key)[0]
-    
-    print 'Building sense tree...'
-    sense = Sense(id, emotion)
-    tree = buildSenseTree(Tree(sense), key, treeDepth, -1)
-    
-    print 'Saving sense tree...'
-    
-    save(tree, emotion + '.pickle')
-    
-    print 'Done!'
+    lang = 'EN'
+    key = 'key'
+    emotions = ['love', 'happiness', 'surprise', 'emotionless', 'sad', 'disgust', 'anger', 'fear']
+    treeDepth = 3
+
+    for emotion in emotions:
+        logger.info('Getting synsetIds for ' + emotion)
+        id = getSynsetIds(emotion, lang, key)[0]
+        
+        logger.info('Building sense tree...')
+        sense = Sense(id, emotion)
+        tree = buildSenseTree(Tree(sense), key, treeDepth, -1)
+        
+        logger.info('Saving sense tree...')
+        
+        save(tree, emotion + '.pickle')
+        
+        logger.info('Done!')
