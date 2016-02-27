@@ -3,3 +3,4 @@ threshold_*
 *.log
 *.swp
 *.swo
+*.par
