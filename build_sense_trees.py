@@ -1,5 +1,5 @@
 from babelnet.structures import Sense, Tree
-from babelnet.requests import *
+from babelnet.utils import *
 import cPickle as pickle
 
 
