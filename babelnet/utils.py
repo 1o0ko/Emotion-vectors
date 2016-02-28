@@ -76,7 +76,7 @@ def getHyperHypoAntoNyms(id, lang, key):
         
         # closure FTW!
         def appendElement(elements):
-            senses = utils.getInfo(target, key)['senses']
+            senses = getInfo(target, key)['senses']
             sense = filter(lambda sense: sense['language']==lang, senses)
             lemma =  sense[0]['lemma'] if sense else senses[0]['lemma'] #falback to english lemma, if other are not available
             
