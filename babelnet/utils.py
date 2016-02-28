@@ -51,7 +51,7 @@ def getInfo(id, key):
     
     return sendRequest(params, service_url)
 
-def getHyperHypoAntoNyms(id, key):
+def getHyperHypoAntoNyms(id, lang, key):
     
     service_url = 'https://babelnet.io/v2/getEdges'
 
@@ -76,7 +76,10 @@ def getHyperHypoAntoNyms(id, key):
         
         # closure FTW!
         def appendElement(elements):
-            lemma = getInfo(target, key)['senses'][0]['lemma']
+            senses = utils.getInfo(target, key)['senses']
+            sense = filter(lambda sense: sense['language']==lang, senses)
+            lemma =  sense[0]['lemma'] if sense else senses[0]['lemma'] #falback to english lemma, if other are not available
+            
             elements.append({
                 'id': target,
                 'lemma': lemma,

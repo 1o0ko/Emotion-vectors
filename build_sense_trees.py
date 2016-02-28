@@ -16,7 +16,7 @@ def load(fileName):
     		return  pickle.load(handle)
 
 # to actually build the sense tree
-def buildSenseTree(root, key, maxLevel, weightThreshold):
+def buildSenseTree(root, lang, key, maxLevel=5, weightThreshold=0):
     
     def dictToSense(d):
         return Sense(d['id'], d['lemma'], d['weight'], d['normalizedWeight'])    
@@ -25,7 +25,7 @@ def buildSenseTree(root, key, maxLevel, weightThreshold):
         if level < maxLevel:
             sense = root.value
             
-            hyper, hypo, anto =  getHyperHypoAntoNyms(sense.id, key)
+            hyper, hypo, anto =  getHyperHypoAntoNyms(sense.id, lang, key)
             for h in hypo:
                 if h['weight'] > weightThreshold:
                     root.add_child(Tree(dictToSense(h)))
@@ -53,7 +53,7 @@ if __name__ == '__main__':
         
         logger.info('Building sense tree...')
         sense = Sense(id, emotion)
-        tree = buildSenseTree(Tree(sense), key, treeDepth, -1)
+        tree = buildSenseTree(Tree(sense), lang, key, treeDepth, 0)
         
         logger.info('Saving sense tree...')
         
