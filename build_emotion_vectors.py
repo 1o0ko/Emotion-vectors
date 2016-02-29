@@ -53,6 +53,9 @@ def getEmotionVectors(path, params):
     return emotions
 
 def closest(sentence_vector, emotions):
+
+    if type(sentence_vector) != np.ndarray:
+        return 'emotionless'
     
     closest = None
     best_distane = -float('inf')
@@ -61,7 +64,7 @@ def closest(sentence_vector, emotions):
         current_distance = cosine_similarity([sentence_vector], [emotion_vector])[0][0]    
         if best_distane < current_distance:
             best_distane = current_distance
-            closest = name
+            closest = name       
     
     return closest
 
