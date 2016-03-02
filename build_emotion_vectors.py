@@ -36,8 +36,6 @@ def tree2vector(tree, params, f = getVector):
         if tree.children:        
             for leaf in tree.children:      
                 node_value += node_weight*getvector(leaf, node_weight, level + 1)
-        else:
-            node_value = tree_value   
         
         return node_value / level
     
