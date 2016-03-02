@@ -4,3 +4,4 @@ threshold_*
 *.swp
 *.swo
 *.par
+.ipynb_checkpoints
