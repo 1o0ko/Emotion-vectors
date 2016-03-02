@@ -25,7 +25,6 @@ class TestTreeAveraging(unittest.TestCase):
         treevector = tree2vector(mockTree, {}, lambda tree, params: np.array(tree.value))
         
         npt.assert_allclose(treevector, np.array([ 1.23958333,  1.23958333]))
-        npt.assert_allclose(treevector, np.array([0,0]))
 
 
 if __name__ == '__main__':
