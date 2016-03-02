@@ -128,3 +128,6 @@ def sanityCheck(id, key):
             gloss = result.get('gloss')
             language = result.get('language')
             print language.encode('utf-8') + "\t" + str(gloss.encode('utf-8'))        
+
+if __name__ == '__main__':
+    print 'this module'
