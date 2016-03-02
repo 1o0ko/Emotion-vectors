@@ -147,13 +147,13 @@ if __name__ == '__main__':
     
     logging.config.fileConfig('logging.ini', disable_existing_loggers=False)
 
-#    downloadAllMovies('movies.txt')
+    downloadAllMovies('movies.txt')
 
-    doc = "en/1957/50083/3127877.xml.gz"
+#    doc = "en/1957/50083/3127877.xml.gz"
     
-    for from_, to_ in getParalelSubtittles(doc):
-      print from_
-      print to_
-      print "-------"  
+#    for from_, to_ in getParalelSubtittles(doc):
+#      print from_
+#      print to_
+#      print "-------"  
       
 

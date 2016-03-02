@@ -5,3 +5,5 @@ threshold_*
 *.swo
 *.par
 .ipynb_checkpoints
+*.txt
+nohup.out
