@@ -2,7 +2,7 @@ import numpy as np
 import os
 import string
 
-from display_sense_tree import load
+from babelnet.display_sense_tree import load
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from gensim.models import Word2Vec
